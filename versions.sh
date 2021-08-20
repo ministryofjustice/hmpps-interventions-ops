@@ -15,6 +15,7 @@ function show_changelog() {
     cd "$GIT_ROOT/$repo/"
     git fetch --quiet
     PAGER="" git log --oneline --no-decorate --committer='noreply@github.com' --grep='#' "$older_sha..$newer_sha"
+    PAGER="" git diff --stat "$older_sha..$newer_sha"
   )
 }
 
