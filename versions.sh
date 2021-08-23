@@ -14,8 +14,11 @@ function show_changelog() {
   (
     cd "$GIT_ROOT/$repo/"
     git fetch --quiet
-    PAGER="" git log --oneline --no-decorate --committer='noreply@github.com' --grep='#' "$older_sha..$newer_sha"
-    PAGER="" git diff --stat "$older_sha..$newer_sha"
+    echo "--commits--"
+    PAGER="" git log --oneline --no-decorate --committer='noreply@github.com' --grep='#' "$older_sha..$newer_sha" \
+      | sed 's/Merge pull request /PR /g; s|from ministryofjustice/dependabot/|:dependabot:|g; s|from ministryofjustice/||g'
+    echo -e "\n--diff--"
+    PAGER="" git diff --numstat "$older_sha..$newer_sha"
   )
 }
 
