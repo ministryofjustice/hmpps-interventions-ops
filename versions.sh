@@ -4,7 +4,8 @@ function get_deployed_version() {
   local deployment="$1"
   local namespace="$2"
   kubectl get "deployment/$deployment" --namespace="$namespace" \
-      -o=jsonpath='{.metadata.labels.app\.kubernetes\.io/version}'
+      -o=jsonpath='{.spec.template.spec.containers[].image}' | \
+      sed 's|.*:\(.*\)|\1|'
 }
 
 function show_changelog() {
