@@ -24,6 +24,7 @@ function show_diff() {
   )
 }
 
+git_format='%C(yellow)%h%Creset %s %Cblue(%cr)%Creset'
 function show_changelog() {
   local repo="$1"
   local older_sha="$2"
@@ -32,8 +33,9 @@ function show_changelog() {
     cd "$GIT_ROOT/$repo/"
     git fetch --quiet
     echo "--commits--"
-    PAGER="" git log --oneline --no-decorate --committer='noreply@github.com' --grep='#' "$older_sha..$newer_sha" \
+    PAGER="" git log --oneline --no-decorate --color --pretty=format:"$git_format" --committer='noreply@github.com' --grep='#' "$older_sha..$newer_sha" \
       | sed 's/Merge pull request /PR /g; s|from ministryofjustice/dependabot/|:dependabot:|g; s|from ministryofjustice/||g'
+    echo
   )
 }
 
