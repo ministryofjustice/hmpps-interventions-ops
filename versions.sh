@@ -8,6 +8,22 @@ function get_deployed_version() {
       sed 's|.*:\(.*\)|\1|'
 }
 
+function show_diff() {
+  if [[ "$SHOW_DIFF" == "" ]]; then
+    return
+  fi
+
+  local repo="$1"
+  local older_sha="$2"
+  local newer_sha="$3"
+  (
+    cd "$GIT_ROOT/$repo/"
+    git fetch --quiet
+    echo -e "\n--diff--"
+    PAGER="" git diff --stat "$older_sha..$newer_sha"
+  )
+}
+
 function show_changelog() {
   local repo="$1"
   local older_sha="$2"
@@ -18,8 +34,6 @@ function show_changelog() {
     echo "--commits--"
     PAGER="" git log --oneline --no-decorate --committer='noreply@github.com' --grep='#' "$older_sha..$newer_sha" \
       | sed 's/Merge pull request /PR /g; s|from ministryofjustice/dependabot/|:dependabot:|g; s|from ministryofjustice/||g'
-    echo -e "\n--diff--"
-    PAGER="" git diff --numstat "$older_sha..$newer_sha"
   )
 }
 
@@ -52,6 +66,7 @@ function list_versions() {
   echo "🐿  deploy $repo from: $circle_url"
   echo "unreleased changes in $repo $prod_sha..$dev_sha:"
   show_changelog "$repo" "$prod_sha" "$dev_sha"
+  show_diff "$repo" "$prod_sha" "$dev_sha"
   echo
 }
 
