@@ -73,6 +73,6 @@ function list_versions() {
 }
 
 list_versions "hmpps-interventions-ui" \
-  "hmpps-interventions-research" "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
+  "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
 list_versions "hmpps-interventions-service" \
-  "hmpps-interventions-research" "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
+  "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"

@@ -22,7 +22,7 @@ function try_configured_urls() {
 }
 
 for s in "ui" "service"; do
-  for n in "research" "dev" "preprod" "prod"; do
+  for n in "dev" "preprod" "prod"; do
     try_configured_urls "hmpps-interventions-$s" "hmpps-interventions-$n"
     echo
   done
