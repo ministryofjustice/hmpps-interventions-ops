@@ -82,3 +82,5 @@ list_versions "hmpps-interventions-ui" \
   "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
 list_versions "hmpps-interventions-service" \
   "hmpps-interventions-dev:live" "hmpps-interventions-preprod:live" "hmpps-interventions-prod"
+list_versions "hmpps-delius-interventions-event-listener" \
+  "hmpps-interventions-dev:live" "hmpps-interventions-preprod"
