@@ -30,9 +30,14 @@ function show_changelog() {
   local repo="$1"
   local older_sha="$2"
   local newer_sha="$3"
+  if [[ "$older_sha" == "$newer_sha" ]]; then
+    echo "✨ $(tput setaf 2)no unreleased changes in $repo$(tput sgr 0)"
+    return
+  fi
   (
     cd "$GIT_ROOT/$repo/"
     git fetch --quiet
+    echo "🚧 $(tput setaf 3)unreleased changes in $repo$(tput sgr 0) $older_sha..$newer_sha:"
     echo "--commits--"
     PAGER="" git log --oneline --no-decorate --color --pretty=format:"$git_format" --committer='noreply@github.com' --grep='#' "$older_sha..$newer_sha" \
       | sed 's/Merge pull request /PR /g; s|from ministryofjustice/dependabot/|'"$(tput setaf 14)"':dependabot:'"$(tput sgr 0)"'|g; s|from ministryofjustice/||g'
@@ -72,7 +77,6 @@ function list_versions() {
 
   echo
   echo "🐿  deploy $repo from: $circle_url"
-  echo "unreleased changes in $repo $last_sha..$dev_sha:"
   show_changelog "$repo" "$last_sha" "$dev_sha"
   show_diff "$repo" "$last_sha" "$dev_sha"
   echo
