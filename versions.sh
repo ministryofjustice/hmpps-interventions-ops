@@ -3,7 +3,8 @@
 function get_deployed_version() {
   local deployment="$1"
   local namespace="$2"
-  kubectl get "deployment/$deployment" --namespace="$namespace" \
+  local context="$3"
+  kubectl get "deployment/$deployment" --context="$context" --namespace="$namespace" \
       -o=jsonpath='{.spec.template.spec.containers[].image}' | \
       sed 's|.*:\(.*\)|\1|'
 }
@@ -48,11 +49,18 @@ function list_versions() {
   local last_sha=""
   local dev_sha=""
   for env in "${envs[@]}"; do
+    local context="${K8S_LIVE1_CONTEXT:-live-1.cloud-platform.service.justice.gov.uk}"
+    if [[ "$env" =~ ":live" ]]; then
+      context="${K8S_LIVE_CONTEXT:-live.cloud-platform.service.justice.gov.uk}"
+      env="${env/:live/}"
+    fi
+
     printf "%-40s" "$repo"
     printf "%-40s" "on $env"
     local version
-    version="$(get_deployed_version "$repo" "$env")"
+    version="$(get_deployed_version "$repo" "$env" "$context")"
     printf "%-26s" "has $version"
+    printf "%s" " on $context"
     echo
 
     sha="$(echo "$version" | cut -d'.' -f3)"
@@ -73,4 +81,4 @@ function list_versions() {
 list_versions "hmpps-interventions-ui" \
   "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
 list_versions "hmpps-interventions-service" \
-  "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
+  "hmpps-interventions-dev:live" "hmpps-interventions-preprod:live" "hmpps-interventions-prod"
