@@ -45,7 +45,7 @@ function list_versions() {
   local envs=("$@")
   local circle_url="https://app.circleci.com/pipelines/github/ministryofjustice/$repo?branch=main"
 
-  local prod_sha=""
+  local last_sha=""
   local dev_sha=""
   for env in "${envs[@]}"; do
     printf "%-40s" "$repo"
@@ -56,19 +56,17 @@ function list_versions() {
     echo
 
     sha="$(echo "$version" | cut -d'.' -f3)"
-    if [[ "$env" =~ "prod" ]]; then
-      prod_sha="$sha"
-    fi
-    if [[ "$env" =~ "dev" ]]; then
+    last_sha="$sha" # assumes environments are listed in order of progression
+    if [[ "$env" =~ "-dev" ]]; then
       dev_sha="$sha"
     fi
   done
 
   echo
   echo "🐿  deploy $repo from: $circle_url"
-  echo "unreleased changes in $repo $prod_sha..$dev_sha:"
-  show_changelog "$repo" "$prod_sha" "$dev_sha"
-  show_diff "$repo" "$prod_sha" "$dev_sha"
+  echo "unreleased changes in $repo $last_sha..$dev_sha:"
+  show_changelog "$repo" "$last_sha" "$dev_sha"
+  show_diff "$repo" "$last_sha" "$dev_sha"
   echo
 }
 
