@@ -55,7 +55,7 @@ function list_versions() {
       env="${env/:live/}"
     fi
 
-    printf "%-40s" "$repo"
+    printf "%-50s" "$repo"
     printf "%-40s" "on $env"
     local version
     version="$(get_deployed_version "$repo" "$env" "$context")"
