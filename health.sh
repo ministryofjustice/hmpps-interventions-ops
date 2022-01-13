@@ -15,8 +15,6 @@ function try_configured_urls() {
     env_var="${elems[0]}"
     url="${elems[1]}"
 
-    printf "%-40s" "$deployment"
-    printf "%-40s" "on $namespace"
     printf "found %-40s checking %s: " "$env_var" "$url"
     check="⛔️ down"
     if curl "$url" --max-time 5 --silent -o/dev/null; then
@@ -26,9 +24,13 @@ function try_configured_urls() {
   done
 }
 
-for s in "ui" "service"; do
-  for n in "dev" "preprod" "prod"; do
-    try_configured_urls "hmpps-interventions-$s" "hmpps-interventions-$n"
-    echo
-  done
-done
+deployment="$1"
+namespace="$2"
+if [ "" == "$deployment" ] || [ "" == "$namespace" ]; then
+  echo "❗️ Usage: $0 <deployment_name> <namespace>"
+  echo "Example: $0 hmpps-interventions-ui hmpps-interventions-preprod"
+  exit 1
+fi
+
+echo "$(tput setaf 3)$deployment$(tput sgr 0) on $(tput setaf 3)$namespace$(tput sgr 0)"
+try_configured_urls "$deployment" "$namespace"
