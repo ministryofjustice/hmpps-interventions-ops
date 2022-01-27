@@ -85,8 +85,8 @@ function list_versions() {
 }
 
 list_versions "hmpps-interventions-ui" \
-  "hmpps-interventions-dev:live" "hmpps-interventions-preprod:live" "hmpps-interventions-prod"
+  "hmpps-interventions-dev:live" "hmpps-interventions-preprod:live" "hmpps-interventions-prod:live"
 list_versions "hmpps-interventions-service" \
-  "hmpps-interventions-dev:live" "hmpps-interventions-preprod:live" "hmpps-interventions-prod"
+  "hmpps-interventions-dev:live" "hmpps-interventions-preprod:live" "hmpps-interventions-prod:live" "hmpps-interventions-prod"
 list_versions "hmpps-delius-interventions-event-listener" \
   "hmpps-interventions-dev:live" "hmpps-interventions-preprod:live"
