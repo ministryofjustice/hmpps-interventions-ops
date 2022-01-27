@@ -56,10 +56,10 @@ function list_versions() {
   local last_sha=""
   local dev_sha=""
   for env in "${envs[@]}"; do
-    local context="${K8S_LIVE1_CONTEXT:-live-1.cloud-platform.service.justice.gov.uk}"
-    if [[ "$env" =~ ":live" ]]; then
-      context="${K8S_LIVE_CONTEXT:-live.cloud-platform.service.justice.gov.uk}"
-      env="${env/:live/}"
+    local context="${K8S_LIVE_CONTEXT:-live.cloud-platform.service.justice.gov.uk}"
+    if [[ "$env" =~ ":live1" ]]; then
+      context="${K8S_LIVE1_CONTEXT:-live-1.cloud-platform.service.justice.gov.uk}"
+      env="${env/:live1/}"
     fi
 
     printf "%-50s" "$repo"
@@ -85,8 +85,8 @@ function list_versions() {
 }
 
 list_versions "hmpps-interventions-ui" \
-  "hmpps-interventions-dev:live" "hmpps-interventions-preprod:live" "hmpps-interventions-prod:live"
+  "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
 list_versions "hmpps-interventions-service" \
-  "hmpps-interventions-dev:live" "hmpps-interventions-preprod:live" "hmpps-interventions-prod:live" "hmpps-interventions-prod"
+  "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
 list_versions "hmpps-delius-interventions-event-listener" \
-  "hmpps-interventions-dev:live" "hmpps-interventions-preprod:live"
+  "hmpps-interventions-dev" "hmpps-interventions-preprod"
