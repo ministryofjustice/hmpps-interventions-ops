@@ -3,8 +3,7 @@
 function get_deployed_version() {
   local deployment="$1"
   local namespace="$2"
-  local context="$3"
-  kubectl get "deployment/$deployment" --context="$context" --namespace="$namespace" \
+  kubectl get "deployment/$deployment" --namespace="$namespace" \
       -o=jsonpath='{.spec.template.spec.containers[].image}' | \
       sed 's|.*:\(.*\)|\1|'
 }
@@ -56,18 +55,11 @@ function list_versions() {
   local last_sha=""
   local dev_sha=""
   for env in "${envs[@]}"; do
-    local context="${K8S_LIVE_CONTEXT:-live.cloud-platform.service.justice.gov.uk}"
-    if [[ "$env" =~ ":live1" ]]; then
-      context="${K8S_LIVE1_CONTEXT:-live-1.cloud-platform.service.justice.gov.uk}"
-      env="${env/:live1/}"
-    fi
-
     printf "%-50s" "$repo"
     printf "%-40s" "on $env"
     local version
-    version="$(get_deployed_version "$repo" "$env" "$context")"
+    version="$(get_deployed_version "$repo" "$env")"
     printf "%-26s" "has $version"
-    printf "%s" " on $context"
     echo
 
     sha="$(echo "$version" | cut -d'.' -f3)"
