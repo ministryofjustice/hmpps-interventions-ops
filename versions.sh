@@ -25,7 +25,7 @@ function show_diff() {
   )
 }
 
-git_format='%C(yellow)%h%Creset %s %Cblue(%cr)%Creset'
+git_format='%C(yellow)%h%Creset %s %Cblue(%cr, %ch)%Creset'
 function show_changelog() {
   local repo="$1"
   local older_sha="$2"
