@@ -1,7 +1,6 @@
-# hmpps-interventions-pipeline
+# hmpps-interventions-ops
 
-Deals with ensuring the continuous integration and deployment pipeline for interventions components
-stays healthy beyond development environment
+Tools used by the interventions dev team in day-to-day operations.
 
 ## Statuses
 
