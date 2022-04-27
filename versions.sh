@@ -17,7 +17,7 @@ function show_files() {
   local older_sha="$2"
   local newer_sha="$3"
   (
-    cd "$GIT_ROOT/$repo/"
+    cd "${GIT_ROOT:-..}/$repo/"
     git fetch --quiet
     echo -e "\n--diff--"
     PAGER="" git diff --stat "$older_sha..$newer_sha"
@@ -29,7 +29,7 @@ function show_changelog() {
   local repo="$1"
   local older_sha="$2"
   local newer_sha="$3"
-  local repo_dir="$GIT_ROOT/$repo"
+  local repo_dir="${GIT_ROOT:-..}/$repo"
   if [[ "$older_sha" == "$newer_sha" ]]; then
     echo "✨ $(tput setaf 2)no unreleased changes in $repo$(tput sgr 0)"
     return

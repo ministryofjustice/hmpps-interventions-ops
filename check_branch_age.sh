@@ -3,7 +3,7 @@
 git_format='%D: %C(yellow)%h%Creset %Cblue(%cr)%Creset'
 function check_branch_ages() {
   local repo="$1"
-  local repo_dir="$GIT_ROOT/$repo"
+  local repo_dir="${GIT_ROOT:-..}/$repo"
   echo
   echo "🔎 $(tput setaf 3)Checking unmerged branches in $repo$(tput sgr 0):"
   (
