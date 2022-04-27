@@ -8,8 +8,8 @@ function get_deployed_version() {
       sed 's|.*:\(.*\)|\1|'
 }
 
-function show_diff() {
-  if [[ "$SHOW_DIFF" == "" ]]; then
+function show_files() {
+  if [[ "$SHOW_FILES" == "" ]]; then
     return
   fi
 
@@ -72,7 +72,7 @@ function list_versions() {
   echo
   echo "🐿  deploy $repo from: $circle_url"
   show_changelog "$repo" "$last_sha" "$dev_sha"
-  show_diff "$repo" "$last_sha" "$dev_sha"
+  show_files "$repo" "$last_sha" "$dev_sha"
   echo
 }
 
