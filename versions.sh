@@ -24,7 +24,14 @@ function show_files() {
   )
 }
 
-git_format='%C(yellow)%h%Creset %s %Cblue(%cr, %ch)%Creset'
+function show_log() {
+  local git_format='%C(yellow)%h%Creset %s %Cblue(%cr, %ch)%Creset'
+  local spec="$1"
+  shift
+  PAGER="" git log --oneline --no-decorate --color --pretty=format:"$git_format" --committer='noreply@github.com' --grep='#' $* "$spec" \
+    | sed 's/Merge pull request /PR /g; s|from ministryofjustice/dependabot/|'"$(tput setaf 14)"':dependabot:'"$(tput sgr 0)"'|g; s|from ministryofjustice/||g'
+}
+
 function show_changelog() {
   local repo="$1"
   local older_sha="$2"
@@ -35,14 +42,18 @@ function show_changelog() {
     return
   else
     echo "🚧 $(tput setaf 3)unreleased changes in $repo$(tput sgr 0) $older_sha..$newer_sha:"
-    echo "--commits from $repo_dir--"
   fi
   (
     cd "$repo_dir/"
     git fetch --quiet
-    PAGER="" git log --oneline --no-decorate --color --pretty=format:"$git_format" --committer='noreply@github.com' --grep='#' "$older_sha..$newer_sha" \
-      | sed 's/Merge pull request /PR /g; s|from ministryofjustice/dependabot/|'"$(tput setaf 14)"':dependabot:'"$(tput sgr 0)"'|g; s|from ministryofjustice/||g'
+
     echo
+    echo "✨ feature commits"
+    show_log "$older_sha..$newer_sha" | grep -v "dependabot"
+
+    echo
+    echo "⬆️  dependency updates"
+    show_log "$older_sha..$newer_sha" | grep "dependabot"
   )
 }
 
