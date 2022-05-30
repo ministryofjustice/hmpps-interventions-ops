@@ -89,7 +89,7 @@ function list_versions() {
 
 list_versions "hmpps-interventions-ui" \
   "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
-list_versions "hmpps-interventions-service" \
+list_versions "hmpps-interventions-service-api" \
   "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
 list_versions "hmpps-delius-interventions-event-listener" \
   "hmpps-interventions-dev" "hmpps-interventions-preprod"
