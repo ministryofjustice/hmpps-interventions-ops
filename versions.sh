@@ -49,11 +49,11 @@ function show_changelog() {
 
     echo
     echo "✨ feature commits"
-    show_log "$older_sha..$newer_sha" | grep -v "dependabot"
+    show_log "$older_sha..$newer_sha" | grep -v "dependabot" || echo "nothing"
 
     echo
     echo "⬆️  dependency updates"
-    show_log "$older_sha..$newer_sha" | grep "dependabot"
+    show_log "$older_sha..$newer_sha" | grep "dependabot" || echo "nothing"
   )
 }
 
