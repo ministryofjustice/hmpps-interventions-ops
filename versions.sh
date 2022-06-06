@@ -3,7 +3,7 @@
 function get_deployed_version() {
   local deployment="$1"
   local namespace="$2"
-  kubectl get "deployment/$deployment" --namespace="$namespace" \
+  kubectl get "$deployment" --namespace="$namespace" \
       -o=jsonpath='{.spec.template.spec.containers[].image}' | \
       sed 's|.*:\(.*\)|\1|'
 }
@@ -60,6 +60,8 @@ function show_changelog() {
 function list_versions() {
   local repo="$1"
   shift
+  local deployment="$1"
+  shift
   local envs=("$@")
   local circle_url="https://app.circleci.com/pipelines/github/ministryofjustice/$repo?branch=main"
 
@@ -69,7 +71,7 @@ function list_versions() {
     printf "%-50s" "$repo"
     printf "%-40s" "on $env"
     local version
-    version="$(get_deployed_version "$repo" "$env")"
+    version="$(get_deployed_version "$deployment" "$env")"
     printf "%-26s" "has $version"
     echo
 
@@ -87,9 +89,9 @@ function list_versions() {
   echo
 }
 
-list_versions "hmpps-interventions-ui" \
+list_versions "hmpps-interventions-ui" "deployment/hmpps-interventions-ui" \
   "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
-list_versions "hmpps-interventions-service-api" \
+list_versions "hmpps-interventions-service" "deployment/hmpps-interventions-service-api" \
   "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
-list_versions "hmpps-delius-interventions-event-listener" \
+list_versions "hmpps-delius-interventions-event-listener" "deployment/hmpps-delius-interventions-event-listener" \
   "hmpps-interventions-dev" "hmpps-interventions-preprod"
