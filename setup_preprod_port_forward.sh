@@ -4,7 +4,7 @@
 namespace="hmpps-interventions-preprod"
 preprod_db_port="5433"
 preprod_db_remote_host="cloud-platform-a326b0ca8eb97132.cdwm328dlye6.eu-west-2.rds.amazonaws.com"
-preprod_port_forward_pod="port-forward-$(whoami)"
+preprod_port_forward_pod="port-forward-${USER//./-}"
 
 function on_complete() {
   kubectl \
