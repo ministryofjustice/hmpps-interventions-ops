@@ -31,8 +31,8 @@ for guidance on storing sensitive data (query output).
 
 ```
 $ ./setup_preprod_port_forward.sh
-pod/port-forward-davidlantos created
-pod/port-forward-davidlantos condition met
+pod/port-forward-username created
+pod/port-forward-username condition met
 
 ✨ Turning on port-forwarding to hmpps-interventions-preprod
 ✨ Use Ctrl-C to exit and cleanup
