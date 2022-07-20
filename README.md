@@ -14,6 +14,19 @@ Tools used by the interventions dev team in day-to-day operations.
 
 ## setup_preprod_port_forward.sh
 
+This script semi-automates [the article in Cloud Platform user guide](https://user-guide.cloud-platform.service.justice.gov.uk/documentation/other-topics/rds-external-access.html#1-run-a-port-forward-pod).
+
+The alternative approach of running queries would be to run a `psql` container, but that has significant drawbacks:
+
+- all input and output is automatically log collected
+- this means any accidental exposure of personal information would be retained in the logs
+
+This port-forwarding method provides an alternative that still requires credentials to access the namespace, but does
+not expose sensitive information accidentally.
+
+:rotating_light: Please read [data at rest on MoJ-issued laptops](https://security-guidance.service.justice.gov.uk/data-handling-and-information-sharing-guide/#data-at-rest-on-moj-issued-laptops)
+for guidance on storing sensitive data (query output).
+
 ### Usage
 
 ```
@@ -32,8 +45,6 @@ Forwarding from [::1]:5433 -> 5432
 To exit, press <kbd>Ctrl</kbd>+<kbd>C</kbd> and wait for the pod to terminate.
 
 ### Connecting to the forwarded database
-
-This script semi-automates [the article in Cloud Platform user guide](https://user-guide.cloud-platform.service.justice.gov.uk/documentation/other-topics/rds-external-access.html#1-run-a-port-forward-pod).
 
 View the credentials with `kubectl get secret/postgres -n hmpps-interventions-preprod -ojson | jq '.data | map_values(@base64d)'`
 
