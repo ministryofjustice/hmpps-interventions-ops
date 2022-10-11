@@ -1,0 +1,87 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-copy-script
+data:
+  entrypoint.sh: |-
+    #!/bin/bash
+    set -e
+
+    echo "${DB_HOST_SOURCE}:5432:${DB_NAME_SOURCE}:${DB_USER_SOURCE}:${DB_PASS_SOURCE}" > ~/.pgpass
+    echo "${DB_HOST_TARGET}:5432:${DB_NAME_TARGET}:${DB_USER_TARGET}:${DB_PASS_TARGET}" >> ~/.pgpass
+    chmod 0600 ~/.pgpass
+
+    set -x
+    pg_dump --host="$DB_HOST_SOURCE" --username="$DB_USER_SOURCE" --format=custom --no-privileges --verbose --file=/tmp/db.dump "$DB_NAME_SOURCE"
+    pg_restore --host="$DB_HOST_TARGET" --username="$DB_USER_TARGET" --clean --no-owner --verbose --dbname="$DB_NAME_TARGET" /tmp/db.dump
+
+    rm -v /tmp/db.dump ~/.pgpass
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-copy-once
+spec:
+  ttlSecondsAfterFinished: 1800
+  template:
+    spec:
+      securityContext:
+        runAsUser: 999
+      restartPolicy: "Never"
+      volumes:
+      - name: db-copy-volume
+        configMap:
+          name: db-copy-script
+          defaultMode: 0755
+      containers:
+      - name: dbcopy
+        image: "postgres:14"
+        command:
+          - /bin/entrypoint.sh
+        volumeMounts:
+          - name: db-copy-volume
+            mountPath: /bin/entrypoint.sh
+            readOnly: true
+            subPath: entrypoint.sh
+        env:
+          - name: DB_NAME_SOURCE
+            valueFrom:
+              secretKeyRef:
+                name: postgres
+                key: database_name
+          - name: DB_USER_SOURCE
+            valueFrom:
+              secretKeyRef:
+                name: postgres
+                key: database_username
+          - name: DB_PASS_SOURCE
+            valueFrom:
+              secretKeyRef:
+                name: postgres
+                key: database_password
+          - name: DB_HOST_SOURCE
+            valueFrom:
+              secretKeyRef:
+                name: postgres
+                key: rds_instance_address
+          - name: DB_NAME_TARGET
+            valueFrom:
+              secretKeyRef:
+                name: postgres14
+                key: database_name
+          - name: DB_USER_TARGET
+            valueFrom:
+              secretKeyRef:
+                name: postgres14
+                key: database_username
+          - name: DB_PASS_TARGET
+            valueFrom:
+              secretKeyRef:
+                name: postgres14
+                key: database_password
+          - name: DB_HOST_TARGET
+            valueFrom:
+              secretKeyRef:
+                name: postgres14
+                key: rds_instance_address
