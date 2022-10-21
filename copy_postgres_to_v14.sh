@@ -1,9 +1,13 @@
 #!/bin/sh -e
-target_namespace="hmpps-interventions-dev"
+target_namespace="${1:-hmpps-interventions-dev}"
 
 echo "Going to stop and migrate $target_namespace"
 echo "Please verify             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ and abort if necessary."
-sleep 2
+echo "Waiting 5 seconds"
+for i in {1..5}; do
+  echo $i
+  sleep 1
+done
 
 
 echo
@@ -58,4 +62,5 @@ kubectl wait --for=condition=Complete --timeout=-1s \
 
 echo
 echo "⏭  Done: deploy the postgres14 config change"
+echo "⏭  Done: start UI after service deploy with 'kubectl scale --namespace=\"$target_namespace\" --replicas=2 deployment/hmpps-interventions-ui'"
 echo "🔃 To retry, delete job/db-copy-once and run this script again"
