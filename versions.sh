@@ -1,11 +1,22 @@
 #!/bin/bash -e
 
+function get_git_version() {
+  local repo="$1"
+  local ref="$2"
+  (
+    cd "${GIT_ROOT:-..}/$repo/"
+    git fetch --quiet
+    git rev-parse "$ref"
+  )
+}
+
 function get_deployed_version() {
   local deployment="$1"
   local namespace="$2"
   kubectl get "$deployment" --namespace="$namespace" \
       -o=jsonpath='{.spec.template.spec.containers[].image}' | \
-      sed 's|.*:\(.*\)|\1|'
+      sed 's|.*:\(.*\)|\1|' | \
+      cut -d'.' -f3
 }
 
 function show_files() {
@@ -67,17 +78,21 @@ function list_versions() {
 
   local last_sha=""
   local dev_sha=""
+
   for env in "${envs[@]}"; do
     printf "%-50s" "$repo"
     printf "%-40s" "on $env"
-    local version
-    version="$(get_deployed_version "$deployment" "$env")"
-    printf "%-26s" "has $version"
+    local sha
+    if [[ "$env" =~ "git:" ]]; then
+      sha="$(get_git_version "$repo" "${env//git:/}")"
+    else
+      sha="$(get_deployed_version "$deployment" "$env")"
+    fi
+    printf "%-26s" "has $sha"
     echo
 
-    sha="$(echo "$version" | cut -d'.' -f3)"
     last_sha="$sha" # assumes environments are listed in order of progression
-    if [[ "$env" =~ "-dev" ]]; then
+    if [[ "$env" =~ "origin/main" ]]; then
       dev_sha="$sha"
     fi
   done
@@ -90,8 +105,8 @@ function list_versions() {
 }
 
 list_versions "hmpps-interventions-ui" "deployment/hmpps-interventions-ui" \
-  "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
+  "git:origin/main" "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
 list_versions "hmpps-interventions-service" "deployment/hmpps-interventions-service-api" \
-  "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
+  "git:origin/main" "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
 list_versions "hmpps-delius-interventions-event-listener" "deployment/hmpps-delius-interventions-event-listener" \
-  "hmpps-interventions-dev" "hmpps-interventions-preprod"
+  "git:origin/main" "hmpps-interventions-dev" "hmpps-interventions-preprod"
