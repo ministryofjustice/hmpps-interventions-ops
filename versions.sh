@@ -43,6 +43,11 @@ function show_log() {
     | sed 's/Merge pull request /PR /g; s|from ministryofjustice/dependabot/|'"$(tput setaf 14)"':dependabot:'"$(tput sgr 0)"'|g; s|from ministryofjustice/||g'
 }
 
+function show_migrations() {
+  local spec="$1"
+  git diff --name-only "$spec" -- src/main/resources/db/
+}
+
 function show_changelog() {
   local repo="$1"
   local older_sha="$2"
@@ -57,6 +62,13 @@ function show_changelog() {
   (
     cd "$repo_dir/"
     git fetch --quiet
+
+    migrations="$(show_migrations "$older_sha".."$newer_sha")"
+    if [[ $migrations != "" ]]; then
+      echo
+      echo "🔥 review $(tput setaf 1)pending database migrations$(tput sgr 0)"
+      echo "$migrations"
+    fi
 
     echo
     echo "✨ feature commits"
