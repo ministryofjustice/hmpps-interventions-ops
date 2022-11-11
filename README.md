@@ -11,6 +11,7 @@ Tools used by the interventions dev team in day-to-day operations.
 | deployed versions | `./versions.sh`<br>use `SHOW_FILES=1` as well for what files changed<br>use `GIT_ROOT=/path/where/your/github/repos/are/cloned` if intervention repos are cloned somewhere else |
 | check latest commit age on all remote branches | `./check_branch_age.sh`<br>use `GIT_ROOT=/path/where/your/github/repos/are/cloned` if intervention repos are cloned somewhere else |
 | setup port forwarding to the pre-prod database to localhost:5433 | `./setup_preprod_port_forward.sh` |
+| compile helm charts into full kubectl yaml files | `./compile_kubectl.sh {repo}` |
 
 ## setup_preprod_port_forward.sh
 
