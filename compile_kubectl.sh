@@ -11,7 +11,7 @@ echo "compiling $(tput setaf 3)$repo$(tput sgr 0)" >/dev/stderr
 
 helm_chart="$repo" # assuming it is the same
 repo_dir="${GIT_ROOT:-..}/$repo"
-test_tag="hmpps-interventions-ops/show-kubectl.sh"
+test_tag="hmpps-interventions-ops/compile_kubectl.sh"
 (
   cd "$repo_dir/helm_deploy"
   helm dependency build "$helm_chart" >/dev/stderr
