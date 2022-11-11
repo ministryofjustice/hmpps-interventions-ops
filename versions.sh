@@ -108,5 +108,3 @@ list_versions "hmpps-interventions-ui" "deployment/hmpps-interventions-ui" \
   "git:origin/main" "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
 list_versions "hmpps-interventions-service" "deployment/hmpps-interventions-service-api" \
   "git:origin/main" "hmpps-interventions-dev" "hmpps-interventions-preprod" "hmpps-interventions-prod"
-list_versions "hmpps-delius-interventions-event-listener" "deployment/hmpps-delius-interventions-event-listener" \
-  "git:origin/main" "hmpps-interventions-dev" "hmpps-interventions-preprod"
