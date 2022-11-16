@@ -22,8 +22,7 @@ function get_deployed_version() {
   local namespace="$2"
   kubectl get "$deployment" --namespace="$namespace" \
       -o=jsonpath='{.spec.template.spec.containers[].image}' | \
-      sed 's|.*:\(.*\)|\1|' | \
-      cut -d'.' -f3
+      sed 's|.*:\(.*\)|\1|'
 }
 
 function show_files() {
@@ -100,13 +99,16 @@ function list_versions() {
   for env in "${envs[@]}"; do
     printf "%-50s" "$repo"
     printf "%-40s" "on $env"
+    local raw_version
     local sha
     if [[ "$env" =~ "git:" ]]; then
-      sha="$(get_git_version "$repo" "${env//git:/}")"
+      raw_version="${env//git:/}"
+      sha="$(get_git_version "$repo" "$raw_version")"
     else
-      sha="$(get_git_version "$repo" "$(get_deployed_version "$deployment" "$env")")"
+      raw_version="$(get_deployed_version "$deployment" "$env")"
+      sha="$(get_git_version "$repo" "$(echo "$raw_version" | cut -d'.' -f3)")"
     fi
-    printf "%-26s" "has $sha"
+    printf "%-26s" "has $raw_version ($sha)"
     echo
 
     last_sha="$sha" # assumes environments are listed in order of progression
