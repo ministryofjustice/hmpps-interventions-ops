@@ -2,8 +2,10 @@
 
 function git_fetch() {
   local repo="$1"
+  local full_repo="${GIT_ROOT:-..}/$repo/"
   (
-    cd "${GIT_ROOT:-..}/$repo/"
+    echo "$(tput setaf 3)fetching git repo $full_repo$(tput sgr 0)"
+    cd "$full_repo"
     git fetch --quiet
   )
 }
