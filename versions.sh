@@ -1,11 +1,18 @@
 #!/bin/bash -e
 
+function git_fetch() {
+  local repo="$1"
+  (
+    cd "${GIT_ROOT:-..}/$repo/"
+    git fetch --quiet
+  )
+}
+
 function get_git_version() {
   local repo="$1"
   local ref="$2"
   (
     cd "${GIT_ROOT:-..}/$repo/"
-    git fetch --quiet
     git rev-parse "$ref"
   )
 }
@@ -29,7 +36,6 @@ function show_files() {
   local newer_sha="$3"
   (
     cd "${GIT_ROOT:-..}/$repo/"
-    git fetch --quiet
     echo -e "\n--diff--"
     PAGER="" git diff --stat "$older_sha..$newer_sha"
   )
@@ -61,7 +67,6 @@ function show_changelog() {
   fi
   (
     cd "$repo_dir/"
-    git fetch --quiet
 
     migrations="$(show_migrations "$older_sha".."$newer_sha")"
     if [[ $migrations != "" ]]; then
@@ -82,6 +87,7 @@ function show_changelog() {
 
 function list_versions() {
   local repo="$1"
+  git_fetch "$repo"
   shift
   local deployment="$1"
   shift
@@ -98,7 +104,7 @@ function list_versions() {
     if [[ "$env" =~ "git:" ]]; then
       sha="$(get_git_version "$repo" "${env//git:/}")"
     else
-      sha="$(get_deployed_version "$deployment" "$env")"
+      sha="$(get_git_version "$repo" "$(get_deployed_version "$deployment" "$env")")"
     fi
     printf "%-26s" "has $sha"
     echo
