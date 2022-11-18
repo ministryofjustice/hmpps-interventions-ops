@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: uptime-monitor
+spec:
+  selector:
+    matchLabels:
+      app: uptime-monitor
+  serviceName: "uptime-monitor-service"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: uptime-monitor
+    spec:
+      containers:
+      - name: uptime-monitor
+        image: ghcr.io/k3rnelpan1c-dev/uptime-kuma:1.18.5
+        securityContext:
+          runAsNonRoot: True
+          runAsUser: 3310
+        readinessProbe:
+          tcpSocket:
+            port: 3001
+        ports:
+        - containerPort: 3001
+          name: http
+        volumeMounts:
+        - name: data
+          mountPath: "/app/data"
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "gp2-expand"
+      resources:
+        requests:
+          storage: 1Gi
