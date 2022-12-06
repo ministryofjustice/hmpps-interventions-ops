@@ -14,7 +14,7 @@ Tools used by the interventions dev team in day-to-day operations.
 | compile helm charts into full kubectl yaml files | `./compile_kubectl.sh {repo}` |
 | call community-api with client credentials | `./get_namespace_community_api_call.sh {query path}` (needs VPN) |
 
-## call_namespace_community_api.sh
+## get_namespace_community_api_call.sh
 
 Automatically configure the access token and hostname for community-api and make the call.
 
