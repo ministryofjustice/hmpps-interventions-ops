@@ -12,6 +12,29 @@ Tools used by the interventions dev team in day-to-day operations.
 | check latest commit age on all remote branches | `./check_branch_age.sh`<br>use `GIT_ROOT=/path/where/your/github/repos/are/cloned` if intervention repos are cloned somewhere else |
 | setup port forwarding to the pre-prod database to localhost:5433 | `./setup_preprod_port_forward.sh` |
 | compile helm charts into full kubectl yaml files | `./compile_kubectl.sh {repo}` |
+| call community-api with client credentials | `./get_namespace_community_api_call.sh {query path}` (needs VPN) |
+
+## call_namespace_community_api.sh
+
+Automatically configure the access token and hostname for community-api and make the call.
+
+🙋‍♂️ Usage checklist:
+
+- Your active namespace is `hmpps-interventions-dev`;
+- You are connected to the VPN.
+
+```
+$ ./get_namespace_community_api_call.sh /secure/offenders/crn/D002399/allOffenderManagers | jq
+Calling API using default namespace (hmpps-interventions-dev)
+Using (needs VPN) https://community-api-secure.test.delius.probation.hmpps.dsd.io/secure/offenders/crn/D002399/allOffenderManagers
+Getting access token using default namespace (hmpps-interventions-dev)
+[
+  {
+    "staffCode": "N02P054",
+    "staffId": 2500001781,
+    "isResponsibleOfficer": true,
+{snip}
+```
 
 ## setup_preprod_port_forward.sh
 
