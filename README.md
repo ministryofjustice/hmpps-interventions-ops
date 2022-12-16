@@ -70,7 +70,7 @@ To exit, press <kbd>Ctrl</kbd>+<kbd>C</kbd> and wait for the pod to terminate.
 
 ### Connecting to the forwarded database
 
-View the credentials with `kubectl get secret/postgres -n hmpps-interventions-preprod -ojson | jq '.data | map_values(@base64d)'`
+View the credentials with `kubectl get secret/postgres14 -n hmpps-interventions-preprod -ojson | jq '.data | map_values(@base64d)'`
 
 You can use any database tool.
 If you want to use `psql` locally, connect via `psql -h localhost -p 5433 -U database_username database_name`:
