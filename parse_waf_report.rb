@@ -19,6 +19,8 @@ csv.each do |r|
   error = {}
   m = JSON.parse(r['log_processed.transaction.messages'])
   error['kind'] = m.first['message']
+  error['kind'] = m.first['details']['match'] if error['kind'].empty?
+
   error['tags'] = m.first['details']['tags'].sort
 
   req = r['log_processed.transaction.request.uri']
@@ -32,7 +34,7 @@ end
 errors.group_by { |e| e['request'] }.each do |request, problems|
   puts
   puts "#{request}:"
-  problems.tally { |p| p['kind'] }.sort_by { |_, c| -c }.each do |p, c|
-    puts "  #{c} x #{p['kind']}"
+  problems.map { |p| p['kind'] }.tally.sort_by { |_, count| -count }.each do |item, count|
+    puts "  #{count} x #{item}"
   end
 end
