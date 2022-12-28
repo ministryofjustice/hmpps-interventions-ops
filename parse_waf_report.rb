@@ -31,7 +31,7 @@ end
 
 errors.group_by { |e| e['request'] }.each do |request, problems|
   puts
-  puts '#{request}:'
+  puts "#{request}:"
   problems.tally { |p| p['kind'] }.each do |p,c|
     puts "  #{c} x #{p['kind']}"
   end
