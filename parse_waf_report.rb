@@ -10,7 +10,7 @@ NUMERIC_REGEX = /\b[0-9]+\b/
 # set time period from 2022-12-05 10:00 UTC for every POST
 # use "Reporting" > "Download CSV"
 csv = CSV
-      .parse(STDIN, headers: true)
+      .parse($stdin, headers: true)
       .reject { |r| r['log_processed.transaction.messages'] == '[]' }
 
 errors = []
