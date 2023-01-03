@@ -20,7 +20,7 @@ csv.each do |r|
   m = JSON.parse(r['log_processed.transaction.messages'])
   error['kind'] = m.first['message']
   error['kind'] = m.first['details']['match'] if error['kind'].empty?
-
+  error['rule'] = m.first['details']['ruleId']
   error['tags'] = m.first['details']['tags'].sort
 
   req = r['log_processed.transaction.request.uri']
@@ -31,10 +31,12 @@ csv.each do |r|
   errors << error
 end
 
-errors.group_by { |e| e['request'] }.each do |request, problems|
+errors.group_by { |e| e['tags'] }.each do |tags, problems|
   puts
-  puts "#{request}:"
-  problems.map { |p| p['kind'] }.tally.sort_by { |_, count| -count }.each do |item, count|
-    puts "  #{count} x #{item}"
+  puts "--tags: #{tags.sort.join(', ')}--"
+
+  # problems = errors
+  problems.map { |p| {k:p['kind'],r:p['rule']} }.tally.sort_by { |_, count| -count }.each do |item, count|
+    puts %(SecRuleUpdateTargetById #{item[:r]} "!REQUEST_METHOD:POST"  # #{item[:k]}, occurred #{count} time#{count == 1 ? '' : 's'})
   end
 end
