@@ -76,13 +76,15 @@ function show_changelog() {
       echo "$migrations"
     fi
 
+    bot_pattern="(dependabot|renovate)"
+
     echo
     echo "✨ feature commits"
-    show_log "$older_sha..$newer_sha" | grep -v "dependabot" || echo "nothing"
+    show_log "$older_sha..$newer_sha" | grep -vE "$bot_pattern" || echo "nothing"
 
     echo
     echo "⬆️  dependency updates"
-    show_log "$older_sha..$newer_sha" | grep "dependabot" || echo "nothing"
+    show_log "$older_sha..$newer_sha" | grep -E "$bot_pattern" || echo "nothing"
   )
 }
 
