@@ -15,7 +15,7 @@ repo_dir="${GIT_ROOT:-..}/$repo"
 test_tag="hmpps-interventions-ops"
 (
   cd "$repo_dir/helm_deploy"
-  helm dependency build "$helm_chart" >/dev/stderr
+  helm dependency update "$helm_chart" >/dev/stderr
   helm template \
     --namespace="hmpps-interventions-$env" \
     --set image.tag="$test_tag" \
