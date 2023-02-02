@@ -48,6 +48,7 @@ function show_log() {
   shift
   PAGER="" git log --oneline --no-decorate --color --pretty=format:"$git_format" --committer='noreply@github.com' --grep='#' $* "$spec" \
     | sed 's/Merge pull request /PR /g; s|from ministryofjustice/dependabot/|'"$(tput setaf 14)"':dependabot:'"$(tput sgr 0)"'|g; s|from ministryofjustice/||g'
+  echo
 }
 
 function show_migrations() {
@@ -69,6 +70,10 @@ function show_changelog() {
   (
     cd "$repo_dir/"
 
+    log="$(show_log "$older_sha..$newer_sha")"
+    pending="$(echo "$log" | wc -l)"
+    echo "$pending changes pending"
+
     migrations="$(show_migrations "$older_sha".."$newer_sha")"
     if [[ $migrations != "" ]]; then
       echo
@@ -80,11 +85,11 @@ function show_changelog() {
 
     echo
     echo "✨ feature commits"
-    show_log "$older_sha..$newer_sha" | grep -vE "$bot_pattern" || echo "nothing"
+    echo "$log" | grep -vE "$bot_pattern" || echo "nothing"
 
     echo
     echo "⬆️  dependency updates"
-    show_log "$older_sha..$newer_sha" | grep -E "$bot_pattern" || echo "nothing"
+    echo "$log" | grep -E "$bot_pattern" || echo "nothing"
   )
 }
 
