@@ -36,7 +36,7 @@ Getting access token using default namespace (hmpps-interventions-dev)
 {snip}
 ```
 
-## setup_preprod_port_forward.sh
+## setup_port_forward.sh
 
 This script semi-automates [the article in Cloud Platform user guide](https://user-guide.cloud-platform.service.justice.gov.uk/documentation/other-topics/rds-external-access.html#1-run-a-port-forward-pod).
 
@@ -54,7 +54,7 @@ for guidance on storing sensitive data (query output).
 ### Usage
 
 ```
-$ ./setup_preprod_port_forward.sh
+$ ./setup_port_forward.sh hmpps-interventions-preprod
 pod/port-forward-username created
 pod/port-forward-username condition met
 
