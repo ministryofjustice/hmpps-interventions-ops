@@ -36,7 +36,7 @@ Getting access token using default namespace (hmpps-interventions-dev)
 {snip}
 ```
 
-## setup_preprod_port_forward.sh
+## setup_env_port_forward.sh
 
 This script semi-automates [the article in Cloud Platform user guide](https://user-guide.cloud-platform.service.justice.gov.uk/documentation/other-topics/rds-external-access.html#1-run-a-port-forward-pod).
 
@@ -48,22 +48,24 @@ The alternative approach of running queries would be to run a `psql` container, 
 This port-forwarding method provides an alternative that still requires credentials to access the namespace, but does
 not expose sensitive information accidentally.
 
+To use this script, please replace namespace, environment_db_port and environment_db_remote_host values with the appropriate ones to connect to correct environment.
+
 :rotating_light: Please read [data at rest on MoJ-issued laptops](https://security-guidance.service.justice.gov.uk/data-handling-and-information-sharing-guide/#data-at-rest-on-moj-issued-laptops)
 for guidance on storing sensitive data (query output).
 
 ### Usage
 
 ```
-$ ./setup_preprod_port_forward.sh
+$ ./setup_env_port_forward.sh
 pod/port-forward-username created
 pod/port-forward-username condition met
 
-✨ Turning on port-forwarding to hmpps-interventions-preprod
+✨ Turning on port-forwarding to hmpps-interventions-<<env>>
 ✨ Use Ctrl-C to exit and cleanup
-🧑‍💻 Connect to the database via localhost:5433 and hmpps-interventions-preprod postgres credentials
+🧑‍💻 Connect to the database via localhost:5433 and hmpps-interventions-<<env>> postgres credentials
 
-Forwarding from 127.0.0.1:5433 -> 5432
-Forwarding from [::1]:5433 -> 5432
+Forwarding from 127.0.0.1:<<forwarding port>> -> <<DB port>>
+Forwarding from [::1]:<<forwarding port>> -> <<DB port>>
 ```
 
 To exit, press <kbd>Ctrl</kbd>+<kbd>C</kbd> and wait for the pod to terminate.
@@ -73,9 +75,9 @@ To exit, press <kbd>Ctrl</kbd>+<kbd>C</kbd> and wait for the pod to terminate.
 View the credentials with `kubectl get secret/postgres14 -n hmpps-interventions-preprod -ojson | jq '.data | map_values(@base64d)'`
 
 You can use any database tool.
-If you want to use `psql` locally, connect via `psql -h localhost -p 5433 -U database_username database_name`:
+If you want to use `psql` locally, connect via `psql -h localhost -p <<forwarding port>> -U database_username database_name`:
 
 ```
-$ psql -h localhost -p 5433 -U cpS00... dba32...
+$ psql -h localhost -p <<forwarding port>> -U cpS00... dba32...
 <password prompt>
 ```
